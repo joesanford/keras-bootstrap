@@ -6,8 +6,8 @@ import shutil
 
 def prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio):
     '''
-    Takes a dataset and splits it into training and validation splits with the 
-    provided ratio
+    Takes a dataset and splits it into training and validation splits with the provided ratio
+    
     :param data_dir: location of the dataset for the model
     :param training_data_dir: output destination for training dataset
     :param validation_data_dir: output destination for validation dataset
@@ -41,6 +41,18 @@ def prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio
 
 
 def create_data_generators(data_dir, training_data_dir, validation_data_dir, img_height, img_width, batch_size, data_ratio):
+    '''
+    Creates data generators for both training and validation sets with the provided 
+    
+    :param data_dir: location of the dataset for the model
+    :param training_data_dir: output destination for training dataset
+    :param validation_data_dir: output destination for validation dataset
+    :param img_height: image height in pixels
+    :param img_width: image width in pixels
+    :param batch_size: batch size for generators to prepare data
+    :param data_ratio: a float value between 0 and 1 of what percentage of data to put in the validation set
+    :return: 
+    '''
     prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio)
     train_datagen = ImageDataGenerator(
         rescale=1. / 255) # Must at a minimum rescale images for input into the network

@@ -5,6 +5,9 @@ from utils.data_utils import create_data_generators
 from utils.model_utils import get_prediction, get_predictions, evaluate_model
 import argparse
 
+
+# The following are global variables for the model that are passed to
+# all model and data preparation functions
 img_width, img_height = 150, 150
 data_dir = './images'
 model_file = 'model.h5'
@@ -19,6 +22,11 @@ num_classes = 10
 
 
 def create_model():
+    '''
+    Creates and returns a model with the definition defined in this method
+    
+    :return: Keras model that was created
+    '''
     model = Sequential()
     model.add(Conv2D(32, (3, 3), input_shape=input_shape))
     model.add(Activation('relu'))
@@ -37,6 +45,12 @@ def create_model():
 
 
 def create_and_train_model(model_name):
+    '''
+    Builds a model and trains a model
+    
+    :param model_name: name of the file that the model is to be saved to
+    :return: 
+    '''
     model = create_model()
     train_generator, validation_generator = create_data_generators(data_dir, training_data_dir, validation_data_dir,
                                                                    img_height, img_width, batch_size, data_ratio)
@@ -52,6 +66,7 @@ def create_and_train_model(model_name):
 
     return 'Done!'
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image classifier')
     parser.add_argument('--train', help='trains the model', action='store_true')
@@ -63,9 +78,9 @@ if __name__ == '__main__':
     if args.train:
         results = create_and_train_model(model_file)
     elif args.predict:
-        results = get_prediction(model_file, 'test1.jpg', img_width, img_height, training_data_dir)
+        results = get_prediction(model_file, 'test1.jpg', img_width, img_height, data_dir)
     elif args.predict_dir:
-        results = get_predictions(model_file, './test/electric_guitar')
+        results = get_predictions(model_file, './test/class_one', img_width, img_height)
     elif args.evaluate:
         results = evaluate_model(model_file, './test', img_width, img_height, batch_size)
     else:
