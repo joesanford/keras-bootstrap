@@ -3,8 +3,6 @@ from sklearn.utils import shuffle
 import os
 import shutil
 
-from classifier import img_width, img_height, batch_size
-
 
 def prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio):
     '''
@@ -14,7 +12,7 @@ def prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio
     :param training_data_dir: output destination for training dataset
     :param validation_data_dir: output destination for validation dataset
     :param data_ratio: a float value between 0 and 1 of what percentage of data to put in the validation set
-    :return: returns when complete
+    :return: returns 1 when complete
     '''
     classes = [folder for folder in sorted(os.listdir(data_dir))]
 
@@ -39,20 +37,15 @@ def prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio
         for image in dataset:
             shutil.copy(os.path.join(data_dir, image), os.path.join(dataset_dir, image))
 
-    return
+    return 1
 
 
-def create_data_generators(training_data_dir, validation_data_dir):
-    prepare_dataset()
+def create_data_generators(data_dir, training_data_dir, validation_data_dir, img_height, img_width, batch_size, data_ratio):
+    prepare_dataset(data_dir, training_data_dir, validation_data_dir, data_ratio)
     train_datagen = ImageDataGenerator(
-        rotation_range=20,
-        rescale=1. / 255,
-        zoom_range=0.1,
-        horizontal_flip=True,
-        vertical_flip=True,
-        shear_range=0.1)
+        rescale=1. / 255) # Must at a minimum rescale images for input into the network
 
-    validation_datagen = ImageDataGenerator(rescale=1. / 255)
+    validation_datagen = ImageDataGenerator(rescale=1. / 255) # Only rescale for validation data
 
     train_generator = train_datagen.flow_from_directory(
         training_data_dir,

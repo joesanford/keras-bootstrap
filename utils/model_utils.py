@@ -1,13 +1,12 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import load_model
 from keras.preprocessing import image
-from classifier import img_width, img_height, batch_size, training_data_dir
 import numpy as np
 import os
 
 
-def get_classification_name(index):
-    generator = ImageDataGenerator().flow_from_directory(training_data_dir, batch_size=batch_size)
+def get_classification_name(index, training_data_dir):
+    generator = ImageDataGenerator().flow_from_directory(training_data_dir)
     label_map = generator.class_indices
     for name, num in label_map.items():
         if num == index:
@@ -16,8 +15,8 @@ def get_classification_name(index):
     return 'No name found'
 
 
-def get_classification_names(indexes):
-    generator = ImageDataGenerator().flow_from_directory(training_data_dir, batch_size=batch_size)
+def get_classification_names(indexes, training_data_dir):
+    generator = ImageDataGenerator().flow_from_directory(training_data_dir)
     label_map = generator.class_indices
 
     results = []
@@ -30,20 +29,20 @@ def get_classification_names(indexes):
     return results
 
 
-def get_prediction(model_file, test_image):
+def get_prediction(model_file, test_image, img_width, img_height, training_data_dir):
     model = load_model(model_file)
     img = image.load_img(test_image, target_size=(img_width, img_height))
     img = image.img_to_array(img)
     img = np.expand_dims(img, axis=0)
     images = np.vstack([img])
 
-    class_index = model.predict_classes(images, batch_size=10)
-    prediction = get_classification_name(class_index)
+    class_index = model.predict_classes(images)
+    prediction = get_classification_name(class_index, training_data_dir)
 
     return prediction
 
 
-def get_predictions(model_file, image_directory):
+def get_predictions(model_file, image_directory, img_width, img_height):
     model = load_model(model_file)
 
     images = [os.path.join(image_directory, path) for path in os.listdir(image_directory)]
@@ -57,13 +56,13 @@ def get_predictions(model_file, image_directory):
 
     images = np.vstack(loaded_images)
 
-    class_indexes = model.predict_classes(images, batch_size=10)
+    class_indexes = model.predict_classes(images, image_directory)
     prediction = get_classification_names(class_indexes)
 
     return prediction
 
 
-def evaluate_model(model_file, test_image_path):
+def evaluate_model(model_file, test_image_path, img_width, img_height, batch_size):
     test_generator = ImageDataGenerator().flow_from_directory(
         test_image_path,
         target_size=(img_width, img_height),

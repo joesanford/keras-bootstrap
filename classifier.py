@@ -1,8 +1,8 @@
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
-from data_loader import create_data_generators
-from model_utils import get_prediction, get_predictions, evaluate_model
+from keras.layers import Conv2D, MaxPooling2D
+from keras.models import Sequential
+from utils.data_utils import create_data_generators
+from utils.model_utils import get_prediction, get_predictions, evaluate_model
 import argparse
 
 img_width, img_height = 150, 150
@@ -38,7 +38,8 @@ def create_model():
 
 def create_and_train_model(model_name):
     model = create_model()
-    train_generator, validation_generator = create_data_generators()
+    train_generator, validation_generator = create_data_generators(data_dir, training_data_dir, validation_data_dir,
+                                                                   img_height, img_width, batch_size, data_ratio)
 
     model.fit_generator(
         train_generator,
@@ -51,7 +52,6 @@ def create_and_train_model(model_name):
 
     return 'Done!'
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Image classifier')
     parser.add_argument('--train', help='trains the model', action='store_true')
@@ -63,11 +63,11 @@ if __name__ == '__main__':
     if args.train:
         results = create_and_train_model(model_file)
     elif args.predict:
-        results = get_prediction(model_file, 'test1.jpg')
+        results = get_prediction(model_file, 'test1.jpg', img_width, img_height, training_data_dir)
     elif args.predict_dir:
         results = get_predictions(model_file, './test/electric_guitar')
     elif args.evaluate:
-        results = evaluate_model(model_file, './test')
+        results = evaluate_model(model_file, './test', img_width, img_height, batch_size)
     else:
         results = 'No commands passed, see --help for more information'
 
