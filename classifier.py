@@ -57,7 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--train', help='trains the model', action='store_true')
     parser.add_argument('--evaluate', help='evaluates the model on a test set', action='store_true')
     parser.add_argument('--predict', help='makes a prediction based on a single image', action='store_true')
-    parser.add_argument('--predict_dir', help='makes a prediction for a directory of images', action='store_true')
+    parser.add_argument('--predict_dir', help='makes predictions for a directory of images', action='store_true')
     args = parser.parse_args()
 
     if args.train:

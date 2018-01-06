@@ -13,5 +13,5 @@ optional arguments:
   --train        trains the model
   --evaluate     evaluates the model on a test set
   --predict      makes a prediction based on a single image
-  --predict_dir  makes a prediction for a directory of images
+  --predict_dir  makes predictions for a directory of images
 ```
